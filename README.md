@@ -6,10 +6,13 @@
 - folium == 0.12.1.post1
 - pandas == 1.4.2
 - streamlit_folium == 0.6.12
+- openpyxl==3.0.10
 
-### 작동법
+### 작동
 
-- main.py를 실행시키면 됩니다
+- clone (혹은 다운로드)
+- requirement.txt를 이용하여 패키지 설치(pip install -r requirements.txt)
+- main.py를 실행
 
 
 ### 예시
