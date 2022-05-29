@@ -1,5 +1,6 @@
 import pandas as pd
 import folium
+from folium import plugins
 
 def get_data():
     df = pd.read_excel('dashboard_data/교통약자다발지점_사고지표_대시보드.xlsx')
@@ -233,9 +234,7 @@ class Map:
             url_file = Map.load_icon_img('black')
             
         icon = folium.features.CustomIcon(url_file, icon_size=(40,40))
-        return icon
-    
-    
+        return icon, sev_level
     
     
     # 전체적인 지도 그리는 메소드
@@ -249,20 +248,58 @@ class Map:
                         width=width, 
                         height=height
         )
-        
+
+
+        # 세부 Grouping 화면
+        fg = folium.FeatureGroup()
+        m.add_child(fg)
+
+        g1 = plugins.FeatureGroupSubGroup(fg)
+        m.add_child(g1)
+
+        g2 = plugins.FeatureGroupSubGroup(fg)
+        m.add_child(g2)
+
+        g3 = plugins.FeatureGroupSubGroup(fg)
+        m.add_child(g3)
+
+        # 각각의 등급별 지점 개수 count
+        w1, w2, w3 = 0, 0, 0
 
         for idx in range(len(self.df)):
             location = self.df.loc[idx, ['지점명']][-1]
             lat = self.df.loc[idx, ['위도']]
             lon = self.df.loc[idx, ['경도']]
-            
-            folium.Marker(
-                
+            icon, group =  Map.set_icon(self.df, idx)
+            marker = folium.Marker(
                           location = [lat, lon],
                           popup = Map.html_render(self.df, idx),
                           tooltip = location,
-                          icon = Map.set_icon(self.df, idx)
-                          ).add_to(m)
-            
-       
+                          icon = icon
+                          )
+
+            marker.add_to(m)
+
+            # 각 위험등급별로 subgroup
+            if group == '주의':
+              marker.add_to(g1)
+              w1 += 1
+            elif group == '위험':
+              marker.add_to(g2)
+              w2 += 1
+            else:
+              marker.add_to(g3)
+              w3 += 1
+
+        # group naming
+        fg.layer_name = f'전체({w1+w2+w3})'
+        g1.layer_name = f'주의({w1})'
+        g2.layer_name = f'위험({w2})'
+        g3.layer_name = f'매우 위험({w3})'
+        
+
+
+        folium.LayerControl(collapsed=False,).add_to(m)
+        
+  
         return m
