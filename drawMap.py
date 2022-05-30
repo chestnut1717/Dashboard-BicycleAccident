@@ -245,22 +245,23 @@ class Map:
                         min_zoom = 7,
                         zoom_start=self.zoom_start,
                         # scrollWheelZoom=False,
+                        tiles=None,
                         width=width, 
                         height=height
         )
 
 
         # 세부 Grouping 화면
-        fg = folium.FeatureGroup()
-        m.add_child(fg)
+        # fg = folium.FeatureGroup(overlay=False)
+        # m.add_child(fg)
 
-        g1 = plugins.FeatureGroupSubGroup(fg)
+        g1 = folium.FeatureGroup()
         m.add_child(g1)
 
-        g2 = plugins.FeatureGroupSubGroup(fg)
+        g2 = folium.FeatureGroup()
         m.add_child(g2)
 
-        g3 = plugins.FeatureGroupSubGroup(fg)
+        g3 = folium.FeatureGroup()
         m.add_child(g3)
 
         # 각각의 등급별 지점 개수 count
@@ -292,10 +293,11 @@ class Map:
               w3 += 1
 
         # group naming
-        fg.layer_name = f'전체({w1+w2+w3})'
+        folium.raster_layers.TileLayer(tiles='openstreetmap', name=f'전체({w1+w2+w3})').add_to(m)
         g1.layer_name = f'주의({w1})'
         g2.layer_name = f'위험({w2})'
         g3.layer_name = f'매우 위험({w3})'
+
         
 
 
