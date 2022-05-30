@@ -175,7 +175,7 @@ class Map:
                         <td>경상 : <span id="woundLow">""" + str(wound_low) + """</span></td>
                       </tr>
                       <tr class="info accRsn">
-                        <td colspan="2"주요사고원인 : <span id="rsn">""" +  acc_rsn + """</span></td>
+                        <td colspan="2">주요사고원인 : <span id="rsn">""" +  acc_rsn + """</span></td>
                       </tr>
                       <tr class="info severity">
                         <td colspan="2">위험도 : <span id="sev">""" + sev_level +"""</span></td>
