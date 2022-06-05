@@ -1,6 +1,7 @@
 import pandas as pd
 import folium
 from folium import plugins
+import copy
 
 def get_data():
     df = pd.read_excel('dashboard_data/교통약자다발지점_사고지표_대시보드.xlsx')
@@ -236,7 +237,6 @@ class Map:
         icon = folium.features.CustomIcon(url_file, icon_size=(40,40))
         return icon, sev_level
     
-    
     # 전체적인 지도 그리는 메소드
     def draw_map(self, width, height):
         
@@ -250,10 +250,11 @@ class Map:
                         height=height
         )
 
+        tiles = folium.raster_layers.TileLayer(tiles='openstreetmap')
+        tiles.add_to(m)
+
 
         # 세부 Grouping 화면
-        # fg = folium.FeatureGroup(overlay=False)
-        # m.add_child(fg)
 
         g1 = folium.FeatureGroup()
         m.add_child(g1)
@@ -263,10 +264,16 @@ class Map:
 
         g3 = folium.FeatureGroup()
         m.add_child(g3)
+        
+        # 교차로 여부 check
+        g_cross = folium.FeatureGroup()
+        m.add_child(g_cross)
+
 
         # 각각의 등급별 지점 개수 count
         w1, w2, w3 = 0, 0, 0
-
+        byc_cnt = 0
+        tmp = 0
         for idx in range(len(self.df)):
             location = self.df.loc[idx, ['지점명']][-1]
             lat = self.df.loc[idx, ['위도']]
@@ -279,7 +286,21 @@ class Map:
                           icon = icon
                           )
 
-            marker.add_to(m)
+
+            matches = ["교차로", "사거리", "삼거리", "네거리", "오거리"]
+            if any(x in location for x in matches):
+              marker2 = folium.Marker(
+                            location = [lat, lon],
+                            radius=10,
+                            popup = Map.html_render(self.df, idx),
+                            tooltip = location,
+                            icon = folium.Icon(color='blue',icon='road')
+                            )
+              if group =='위험' or group == '매우 위험':
+                tmp += 1
+              marker2.add_to(g_cross)
+              byc_cnt += 1
+
 
             # 각 위험등급별로 subgroup
             if group == '주의':
@@ -293,15 +314,15 @@ class Map:
               w3 += 1
 
         # group naming
-        folium.raster_layers.TileLayer(tiles='openstreetmap', name=f'전체({w1+w2+w3})').add_to(m)
+        tiles.layer_name = f'전체({w1+w2+w3})'
         g1.layer_name = f'주의({w1})'
         g2.layer_name = f'위험({w2})'
         g3.layer_name = f'매우 위험({w3})'
 
-        
+
+        g_cross.layer_name = f'교차로 구간({byc_cnt})'
 
 
-        folium.LayerControl(collapsed=False,).add_to(m)
-        
+        folium.LayerControl(collapsed=False,).add_to(m)        
   
         return m
