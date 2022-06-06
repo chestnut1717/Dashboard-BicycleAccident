@@ -172,8 +172,8 @@ class Map:
                         <td>중상 : <span id="woundHigh">""" + str(wound_high) + """</span></td>
                       </tr>
                       <tr class="info accCnt">
-                        <td>부상 : <span id="woundMdl">""" + str(wound_mdl) + """</span></td>
-                        <td>경상 : <span id="woundLow">""" + str(wound_low) + """</span></td>
+                        <td>경상 : <span id="woundMdl">""" + str(wound_mdl) + """</span></td>
+                        <td>부상 : <span id="woundLow">""" + str(wound_low) + """</span></td>
                       </tr>
                       <tr class="info accRsn">
                         <td colspan="2">주요사고원인 : <span id="rsn">""" +  acc_rsn + """</span></td>
@@ -202,13 +202,10 @@ class Map:
         severity = df.loc[idx, ['심각도(명)']][-1]
         if severity <= 8 and death < 1:
             sev_level = "주의"
-            severity_color = "var(--color-black)"
         elif severity <= 16:
             sev_level = "위험"
-            severity_color = "var(--color-orange)"
         else:
             sev_level = "매우 위험"
-            severity_color = "var(--color-deep-red)" 
         
         return sev_level
     
