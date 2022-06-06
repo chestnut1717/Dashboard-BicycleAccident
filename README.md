@@ -1,18 +1,13 @@
 # README
 
-## 필수 library
+### 접속
+https://share.streamlit.io/chestnut1717/dashboard-bicycleaccident/main/view.py
 
-- streamlit == 1.9.2
-- folium == 0.12.1.post1
-- pandas == 1.4.2
-- streamlit_folium == 0.6.12
-- openpyxl==3.0.10
 
-### 작동
-
-- clone (혹은 다운로드)
-- requirement.txt를 이용하여 패키지 설치(pip install -r requirements.txt)
-- main.py를 실행
+### 데이터 출처
+- 교통안전정보관리시스템(TMACS)
+- 전국 17개 광역 사고다발지점(상위 30개)
+- https://tmacs.kotsa.or.kr/web/TG/TG300/TG3200/Tg3200_34.jsp?mid=S1814#
 
 
 ### 기능
